@@ -1,5 +1,6 @@
 package com.dinu.image;
 
+import com.dinu.image.matcher.PcaMatcher;
 import org.openimaj.feature.local.list.LocalFeatureList;
 import org.openimaj.feature.local.matcher.BasicMatcher;
 import org.openimaj.feature.local.matcher.FastBasicKeypointMatcher;
@@ -37,7 +38,7 @@ public class FeatureCompare {
     // get ASIFTMatchingScore()
     // get CSIFTMatchingScore()
 
-    public double getGSIFTMatchingScore(BufferedImage design, BufferedImage actual, boolean showOutput) {
+    public double getSIFTMatchingScore(BufferedImage design, BufferedImage actual) {
         MBFImage query = ImageUtilities.createMBFImage(design, true);
         MBFImage target = ImageUtilities.createMBFImage(actual, true);
         DoGSIFTEngine engine = new DoGSIFTEngine();
@@ -54,8 +55,35 @@ public class FeatureCompare {
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
 
+        displayMatches(query, target, matcher.getMatches(), RGBColour.RED);
+
         return calculateMatchesScore(design, matches);
     }
+
+    public double getPcaSIFTMatchingScore(BufferedImage design, BufferedImage actual) {
+        MBFImage query = ImageUtilities.createMBFImage(design, true);
+        MBFImage target = ImageUtilities.createMBFImage(actual, true);
+        DoGSIFTEngine engine = new DoGSIFTEngine();
+
+        LocalFeatureList<Keypoint> queryKeypoints = engine.findFeatures(query.flatten());
+        LocalFeatureList<Keypoint> targetKeypoints = engine.findFeatures(target.flatten());
+
+//        LocalFeatureMatcher<Keypoint> matcher = new PcaMatcher<>();
+        RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(5.0, 1500,
+                new RANSAC.PercentageInliersStoppingCondition(0.5));
+        LocalFeatureMatcher<Keypoint> matcher = new ConsistentLocalFeatureMatcher2d<>(
+                new PcaMatcher<>(), modelFitter);
+
+
+        matcher.setModelFeatures(queryKeypoints);
+        matcher.findMatches(targetKeypoints);
+        List<Pair<Keypoint>> matches = matcher.getMatches();
+
+        displayMatches(query, target, matcher.getMatches(), RGBColour.CYAN);
+
+        return calculateMatchesScore(design, matches);
+    }
+
 
     public double getASIFTMatchingScore(BufferedImage design, BufferedImage actual) {
         MBFImage query = ImageUtilities.createMBFImage(design, true);
@@ -74,10 +102,12 @@ public class FeatureCompare {
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
 
+        displayMatches(query, target, matcher.getMatches(), RGBColour.GREEN);
+
         return calculateMatchesScore(design, matches);
     }
 
-    public double getCSIFTMatchingScore(BufferedImage design, BufferedImage actual, boolean showOutput) {
+    public double getCSIFTMatchingScore(BufferedImage design, BufferedImage actual) {
         MBFImage query = ImageUtilities.createMBFImage(design, true);
         MBFImage target = ImageUtilities.createMBFImage(actual, true);
         DoGColourSIFTEngine engine = new DoGColourSIFTEngine();
@@ -93,6 +123,8 @@ public class FeatureCompare {
         matcher.setModelFeatures(queryKeypoints);
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
+
+        displayMatches(query, target, matcher.getMatches(), RGBColour.BLUE);
 
         return calculateMatchesScore(design, matches);
     }

@@ -14,15 +14,13 @@ import org.openimaj.image.MBFImage;
 import org.openimaj.image.colour.RGBColour;
 import org.openimaj.image.typography.hershey.HersheyFont;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * @author Dinu
@@ -831,6 +829,7 @@ public class CompareFrame extends javax.swing.JFrame {
                 FeatureCompare.FeatureEngine.GSIFT,
                 FeatureCompare.FeatureMatcher.ConsistentLocalFeatureMatcher2d,
                 true);
+//        double compareFeatures = new FeatureCompare().getSIFTMatchingScore(designImage, actualImage);
         labelLocalFeatureDiff.setText(String.valueOf("" + Math.round(compareFeatures * 100) / 100.0));
     }
 
