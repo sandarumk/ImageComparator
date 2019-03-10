@@ -3,8 +3,6 @@ package com.dinu.vision;
 import com.dinu.image.BlobFinder;
 import com.dinu.image.BlobUtil;
 
-import static org.junit.Assert.*;
-
 /**
  * @author Dinu
  */
@@ -27,8 +25,8 @@ public class CompareFrameTest {
         BlobFinder.Blob blob3 = new BlobFinder.Blob(62, 1014, 1647, 1682, 33841);
         BlobFinder.Blob blob4 = new BlobFinder.Blob(161, 228, 1816, 1851, 2448);
 
-        System.out.println(String.format("b1,b2: %f", BlobUtil.meanShiftDistance(blob1, blob2)));
-        System.out.println(String.format("b2,b4: %f", BlobUtil.meanShiftDistance(blob2, blob4)));
-        System.out.println(String.format("b2,b3: %f", BlobUtil.meanShiftDistance(blob2, blob3)));
+        System.out.println(String.format("b1,b2: %f", BlobUtil.calculateDistance(blob1, blob2)));
+        System.out.println(String.format("b2,b4: %f", BlobUtil.calculateDistance(blob2, blob4)));
+        System.out.println(String.format("b2,b3: %f", BlobUtil.calculateDistance(blob2, blob3)));
     }
 }

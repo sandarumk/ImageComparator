@@ -6,8 +6,10 @@
 package com.dinu.vision;
 
 import com.dinu.image.*;
+import com.dinu.image.matcher.HistogramCompare;
 import com.dinu.model.Matches;
 import com.dinu.model.PxToPxResult;
+import com.dinu.util.Timer;
 import org.openimaj.image.DisplayUtilities;
 import org.openimaj.image.ImageUtilities;
 import org.openimaj.image.MBFImage;
@@ -25,7 +27,7 @@ import java.util.Random;
 /**
  * @author Dinu
  */
-public class CompareFrame extends javax.swing.JFrame {
+public class CompareFrameNew extends JFrame {
 
     BufferedImage designImage;
     BufferedImage actualImage;
@@ -37,13 +39,82 @@ public class CompareFrame extends javax.swing.JFrame {
 
     ArrayList<BlobFinder.Blob> designBlobList;
     ArrayList<BlobFinder.Blob> actualBlobList;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonApply;
+    private javax.swing.JButton buttonRevert;
+    private javax.swing.JCheckBox chkMeanShift;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel labelBlobScore;
+    private javax.swing.JLabel labelBlobTime;
+    private javax.swing.JLabel labelCSiftScore;
+    private javax.swing.JLabel labelCSiftTime;
+    private javax.swing.JLabel labelPcaSiftScore;
+    private javax.swing.JLabel labelPcaSiftTime;
+    private javax.swing.JLabel labelPxScore;
+    private javax.swing.JLabel labelPxTime;
+    private javax.swing.JLabel labelSiftScore;
+    private javax.swing.JLabel labelSiftTime;
+    private javax.swing.JPanel layoutPanel;
+    private javax.swing.JLabel lblAnimation;
+    private javax.swing.JLabel lblStatus;
+    private javax.swing.JButton openActual;
+    private javax.swing.JButton openDesign;
+    private javax.swing.JPanel panelActual;
+    private javax.swing.JPanel panelDesign;
+    private javax.swing.JPanel pixeltopixelPanel;
+    private javax.swing.JTabbedPane tabPanel;
 
     /**
      * Creates new form CompareFrame
      */
-    public CompareFrame() {
+    public CompareFrameNew() {
         initComponents();
         setStatus("Status", false);
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(CompareFrameNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(CompareFrameNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(CompareFrameNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(CompareFrameNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new CompareFrameNew().setVisible(true);
+            }
+        });
     }
 
     /**
@@ -61,29 +132,26 @@ public class CompareFrame extends javax.swing.JFrame {
         openActual = new javax.swing.JButton();
         tabPanel = new javax.swing.JTabbedPane();
         pixeltopixelPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        labelTotal = new javax.swing.JLabel();
-        labelSimilar = new javax.swing.JLabel();
-        labelDifferent = new javax.swing.JLabel();
-        labelDifferentPercent = new javax.swing.JLabel();
+        labelPxScore = new javax.swing.JLabel();
+        labelPxTime = new javax.swing.JLabel();
         layoutPanel = new javax.swing.JPanel();
-        chkGrayscale = new javax.swing.JCheckBox();
-        chkBlobDetection = new javax.swing.JCheckBox();
-        chkEdgeDetection = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         jCheckBox1 = new javax.swing.JCheckBox();
-        labelLocalFeatureDiff = new javax.swing.JLabel();
+        labelSiftScore = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        labelCSiftScore = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        labelPcaSiftScore = new javax.swing.JLabel();
+        labelSiftTime = new javax.swing.JLabel();
+        labelCSiftTime = new javax.swing.JLabel();
+        labelPcaSiftTime = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         chkMeanShift = new javax.swing.JCheckBox();
-        jLabel6 = new javax.swing.JLabel();
-        labelMeanShiftUnmatch = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        labelMeanShiftMatched = new javax.swing.JLabel();
-        chkRemoveTexts = new javax.swing.JCheckBox();
+        labelBlobScore = new javax.swing.JLabel();
+        labelBlobTime = new javax.swing.JLabel();
         buttonApply = new javax.swing.JButton();
         buttonRevert = new javax.swing.JButton();
         lblAnimation = new javax.swing.JLabel();
@@ -146,97 +214,69 @@ public class CompareFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Total Pixels");
+        jLabel4.setText("Similarity (%)");
 
-        jLabel2.setText("Similar");
+        labelPxScore.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelPxScore.setLabelFor(jLabel4);
+        labelPxScore.setText("0");
 
-        jLabel3.setText("Different");
-
-        jLabel4.setText("Different (%)");
-
-        labelSimilar.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        labelSimilar.setLabelFor(jLabel2);
-        labelSimilar.setText("0");
-
-        labelDifferent.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        labelDifferent.setLabelFor(jLabel3);
-        labelDifferent.setText("0");
-
-        labelDifferentPercent.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        labelDifferentPercent.setLabelFor(jLabel4);
-        labelDifferentPercent.setText("0");
+        labelPxTime.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelPxTime.setLabelFor(jLabel4);
+        labelPxTime.setText("0");
 
         javax.swing.GroupLayout pixeltopixelPanelLayout = new javax.swing.GroupLayout(pixeltopixelPanel);
         pixeltopixelPanel.setLayout(pixeltopixelPanelLayout);
         pixeltopixelPanelLayout.setHorizontalGroup(
                 pixeltopixelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pixeltopixelPanelLayout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addGroup(pixeltopixelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE))
-                                .addGap(34, 34, 34)
-                                .addGroup(pixeltopixelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(pixeltopixelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addComponent(labelSimilar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(labelDifferent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(labelDifferentPercent, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(448, Short.MAX_VALUE))
+                                .addContainerGap()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelPxScore, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelPxTime, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(579, Short.MAX_VALUE))
         );
         pixeltopixelPanelLayout.setVerticalGroup(
                 pixeltopixelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pixeltopixelPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(pixeltopixelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(pixeltopixelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel2)
-                                        .addComponent(labelSimilar))
-                                .addGap(18, 18, 18)
-                                .addGroup(pixeltopixelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel3)
-                                        .addComponent(labelDifferent))
-                                .addGap(18, 18, 18)
                                 .addGroup(pixeltopixelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel4)
-                                        .addComponent(labelDifferentPercent))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(labelPxScore)
+                                        .addComponent(labelPxTime))
+                                .addContainerGap(121, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Pixel to Pixel", pixeltopixelPanel);
-
-        chkGrayscale.setText("Grayscale");
-        chkGrayscale.setActionCommand("");
-
-        chkBlobDetection.setText("Blob Detection");
-        chkBlobDetection.setToolTipText("");
-        chkBlobDetection.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkBlobDetectionActionPerformed(evt);
-            }
-        });
-
-        chkEdgeDetection.setText("Edge Detection");
-        chkEdgeDetection.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkEdgeDetectionActionPerformed(evt);
-            }
-        });
 
         jPanel1.setName(""); // NOI18N
 
         jCheckBox1.setText("Local feature points");
 
-        labelLocalFeatureDiff.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        labelLocalFeatureDiff.setLabelFor(jLabel2);
-        labelLocalFeatureDiff.setText("0");
+        labelSiftScore.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelSiftScore.setText("0");
 
-        jLabel5.setText("Diff %");
+        jLabel5.setText("SIFT Matching %");
+
+        jLabel8.setText("CSIFT Matching %");
+
+        labelCSiftScore.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelCSiftScore.setText("0");
+
+        jLabel9.setText("PCA-SIFT Matching %");
+
+        labelPcaSiftScore.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelPcaSiftScore.setText("0");
+
+        labelSiftTime.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelSiftTime.setText("0");
+
+        labelCSiftTime.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelCSiftTime.setText("0");
+
+        labelPcaSiftTime.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelPcaSiftTime.setText("0");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -245,12 +285,23 @@ public class CompareFrame extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jCheckBox1)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel5)
-                                                .addGap(117, 117, 117)
-                                                .addComponent(labelLocalFeatureDiff, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addContainerGap(55, Short.MAX_VALUE))
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel8)
+                                                        .addComponent(jLabel9)
+                                                        .addComponent(jLabel5))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(labelSiftScore, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(labelPcaSiftScore, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(labelCSiftScore, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(labelSiftTime, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(labelPcaSiftTime, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(labelCSiftTime, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(jCheckBox1))
+                                .addContainerGap(75, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -258,13 +309,29 @@ public class CompareFrame extends javax.swing.JFrame {
                                 .addContainerGap()
                                 .addComponent(jCheckBox1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(labelLocalFeatureDiff)
-                                        .addComponent(jLabel5))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(labelSiftScore)
+                                                        .addComponent(jLabel5))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(labelCSiftScore)
+                                                        .addComponent(jLabel8))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(labelPcaSiftScore)
+                                                        .addComponent(jLabel9)))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(labelSiftTime)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(labelCSiftTime)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(labelPcaSiftTime)))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        chkMeanShift.setText("Mean-shift tracking");
+        chkMeanShift.setText("Blob matching");
         chkMeanShift.setToolTipText("");
         chkMeanShift.setActionCommand("");
         chkMeanShift.addActionListener(new java.awt.event.ActionListener() {
@@ -273,17 +340,13 @@ public class CompareFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("Unmatched %");
+        jLabel7.setText("Matched %");
 
-        labelMeanShiftUnmatch.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        labelMeanShiftUnmatch.setLabelFor(jLabel2);
-        labelMeanShiftUnmatch.setText("0");
+        labelBlobScore.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelBlobScore.setText("0");
 
-        jLabel7.setText("Matched Diff %");
-
-        labelMeanShiftMatched.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        labelMeanShiftMatched.setLabelFor(jLabel2);
-        labelMeanShiftMatched.setText("0");
+        labelBlobTime.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        labelBlobTime.setText("0");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -293,14 +356,12 @@ public class CompareFrame extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(chkMeanShift)
                                         .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel6)
-                                                        .addComponent(jLabel7))
-                                                .addGap(117, 117, 117)
-                                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(labelMeanShiftMatched, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(labelMeanShiftUnmatch, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGap(0, 24, Short.MAX_VALUE))
+                                                .addComponent(jLabel7)
+                                                .addGap(28, 28, 28)
+                                                .addComponent(labelBlobScore, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(labelBlobTime, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 229, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,16 +370,11 @@ public class CompareFrame extends javax.swing.JFrame {
                                 .addComponent(chkMeanShift)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(labelMeanShiftUnmatch)
-                                        .addComponent(jLabel6))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(labelMeanShiftMatched)
-                                        .addComponent(jLabel7))
-                                .addContainerGap(18, Short.MAX_VALUE))
+                                        .addComponent(labelBlobScore)
+                                        .addComponent(jLabel7)
+                                        .addComponent(labelBlobTime))
+                                .addContainerGap(41, Short.MAX_VALUE))
         );
-
-        chkRemoveTexts.setText("Remove texts");
 
         javax.swing.GroupLayout layoutPanelLayout = new javax.swing.GroupLayout(layoutPanel);
         layoutPanel.setLayout(layoutPanelLayout);
@@ -326,16 +382,10 @@ public class CompareFrame extends javax.swing.JFrame {
                 layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layoutPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(chkGrayscale)
-                                        .addComponent(chkBlobDetection)
-                                        .addComponent(chkEdgeDetection)
-                                        .addComponent(chkRemoveTexts))
-                                .addGap(74, 74, 74)
                                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(18, 18, 18)
                                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(77, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layoutPanelLayout.setVerticalGroup(
                 layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -347,16 +397,6 @@ public class CompareFrame extends javax.swing.JFrame {
                                                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(0, 27, Short.MAX_VALUE)))
                                 .addContainerGap())
-                        .addGroup(layoutPanelLayout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(chkGrayscale)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(chkEdgeDetection)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(chkRemoveTexts)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(chkBlobDetection)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Layout", layoutPanel);
@@ -394,9 +434,9 @@ public class CompareFrame extends javax.swing.JFrame {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(panelDesign, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                                .addComponent(panelDesign, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(panelActual, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                                .addComponent(panelActual, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
                                 .addContainerGap())
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(163, 163, 163)
@@ -481,18 +521,12 @@ public class CompareFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonApplyActionPerformed
 
     private void buttonRevertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRevertActionPerformed
-        designImage = ImageUtil.duplicateImage(designImageOriginal);
-        actualImage = ImageUtil.duplicateImage(actualImageOriginal);
-        updateUI();
+        revert();
     }//GEN-LAST:event_buttonRevertActionPerformed
 
     private void openActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openActualActionPerformed
         openImage(1);
     }//GEN-LAST:event_openActualActionPerformed
-
-    private void chkBlobDetectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBlobDetectionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_chkBlobDetectionActionPerformed
 
     private void panelDesignMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelDesignMouseClicked
         displayBufferedImage(designImage, "Design");
@@ -503,10 +537,6 @@ public class CompareFrame extends javax.swing.JFrame {
         displayBufferedImage(actualImage, "Actual");
 //        ZoomPane zoomPane = new ZoomPane(actualImage);
     }//GEN-LAST:event_panelActualMouseClicked
-
-    private void chkEdgeDetectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkEdgeDetectionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_chkEdgeDetectionActionPerformed
 
     private void chkMeanShiftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkMeanShiftActionPerformed
         // TODO add your handling code here:
@@ -522,37 +552,11 @@ public class CompareFrame extends javax.swing.JFrame {
                     comparePixelToPixel();
                     break;
                 case 1:
-                    if (chkGrayscale.isSelected()) {
-                        setStatus("Grayscale", true);
-                        makeGrayscale();
-                        isSelected = true;
-                    }
-                    if (chkEdgeDetection.isSelected()) {
-                        setStatus("Detecting Edge", true);
-                        detectEdge();
-                        isSelected = true;
-                    }
-                    if (chkRemoveTexts.isSelected()) {
-                        setStatus("Removing Texts", true);
-                        removeTexts();
-                        isSelected = true;
-                    }
-                    if (chkBlobDetection.isSelected()) {
-                        setStatus("Detecting Blobs", true);
-                        detectBlob();
-                        isSelected = true;
-                    }
                     if (chkMeanShift.isSelected()) {
-                        if (!chkBlobDetection.isSelected()) {
-                            setStatus("Detecting Blobs", true);
-                            detectBlob();
-                        }
-                        setStatus("Processing Mean-shift Tracking", true);
-                        processMeanShift();
+                        processBlobs();
                         isSelected = true;
                     }
                     if (jCheckBox1.isSelected()) {
-                        setStatus("Processing Local features", true);
                         compareLocalFeatures();
                         isSelected = true;
                     }
@@ -561,6 +565,23 @@ public class CompareFrame extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void processBlobs() {
+        setStatus("Removing Texts", true);
+        removeTexts();
+        removeTexts();
+
+        Timer timer = new Timer();
+        setStatus("Processing Blob matching", true);
+        BlobUtil.MatchingResult blobMatching = BlobUtil.getBlobMatching(designImage, actualImage);
+//        setStatus("Detecting Blobs", true);
+//        detectBlob();
+
+//        matchBlobs();
+        timer.end();
+        labelBlobTime.setText(timer.durationAsString());
+        labelBlobScore.setText("" + Math.round(blobMatching.getSimilarity() * 100) / 100.0);
     }
 
     private void setStatus(String status, boolean isBusy) {
@@ -578,14 +599,11 @@ public class CompareFrame extends javax.swing.JFrame {
             new ImageViewer(actualImage, panelActual);
         }
         if (pxResult != null) {
-            labelTotal.setText(String.format("Design pixels: %d  Actual pixels: %d", pxResult.totalDesign, pxResult.totalActual));
             if (pxResult.getMsg() != null) {
                 JOptionPane.showMessageDialog(this, pxResult.getMsg(), "Pixel To Pixel Error", JOptionPane.ERROR_MESSAGE);
             }
-            labelSimilar.setText("" + pxResult.similar);
-            labelDifferent.setText("" + pxResult.difference);
-            double percent = pxResult.difference * 100.0 / pxResult.totalDesign;
-            labelDifferentPercent.setText("" + Math.round(percent * 100) / 100.0);
+            double percent = pxResult.similar * 100.0 / pxResult.totalDesign;
+            labelPxScore.setText("" + Math.round(percent * 100) / 100.0);
             pxResult = null;
         }
         repaint();
@@ -616,85 +634,20 @@ public class CompareFrame extends javax.swing.JFrame {
             tabPanel.setSelectedIndex(index);
         }
     }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CompareFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CompareFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CompareFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CompareFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CompareFrame().setVisible(true);
-            }
-        });
-    }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonApply;
-    private javax.swing.JButton buttonRevert;
-    private javax.swing.JCheckBox chkBlobDetection;
-    private javax.swing.JCheckBox chkEdgeDetection;
-    private javax.swing.JCheckBox chkGrayscale;
-    private javax.swing.JCheckBox chkMeanShift;
-    private javax.swing.JCheckBox chkRemoveTexts;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JLabel labelDifferent;
-    private javax.swing.JLabel labelDifferentPercent;
-    private javax.swing.JLabel labelLocalFeatureDiff;
-    private javax.swing.JLabel labelMeanShiftMatched;
-    private javax.swing.JLabel labelMeanShiftUnmatch;
-    private javax.swing.JLabel labelSimilar;
-    private javax.swing.JLabel labelTotal;
-    private javax.swing.JPanel layoutPanel;
-    private javax.swing.JLabel lblAnimation;
-    private javax.swing.JLabel lblStatus;
-    private javax.swing.JButton openActual;
-    private javax.swing.JButton openDesign;
-    private javax.swing.JPanel panelActual;
-    private javax.swing.JPanel panelDesign;
-    private javax.swing.JPanel pixeltopixelPanel;
-    private javax.swing.JTabbedPane tabPanel;
     // End of variables declaration//GEN-END:variables
 
     private void comparePixelToPixel() {
+        double calculateHistogram = new HistogramCompare().calculateHistogram(designImage, actualImage);
+        System.out.println("Histogram distance:" + calculateHistogram);
+
+        setStatus("Matching pixel to pixel", true);
+        com.dinu.util.Timer timer = new com.dinu.util.Timer();
         PxToPxResult result = PxToPxOperation.apply(designImage, actualImage);
+        timer.end();
+        labelPxTime.setText(timer.durationAsString());
         actualImage = result.modified;
         pxResult = result;
+
     }
 
     private void makeGrayscale() {
@@ -726,21 +679,8 @@ public class CompareFrame extends javax.swing.JFrame {
 //        return ImageUtil.addPadding(designImage, ImageUtil.colorToRGB(255, 0, 0, 0));
     }
 
-    private BufferedImage identifyBlobs(BufferedImage bufImage, ArrayList<BlobFinder.Blob> blobList) {
-        BlobFinder blobFinder = new BlobFinder(bufImage.getWidth(), bufImage.getHeight());
-        blobFinder.detectBlobs(bufImage, 0, -1, (byte) 0, blobList);
-        System.out.println("blob list size:" + blobList.size());
-//        for (BlobFinder.Blob blob : blobList) {
-//            System.out.println(blob);
-//        }
-        if (blobList.size() > 0) {
-            return blobFinder.getDstImage();
-        } else {
-            return bufImage;
-        }
-    }
 
-    private void processMeanShift() {
+    private void matchBlobs() {
         ArrayList<BlobFinder.Blob> designDiffs;
         ArrayList<Matches> matchesList;
         if (designBlobList != null && actualBlobList != null && !designBlobList.isEmpty()) {
@@ -792,7 +732,7 @@ public class CompareFrame extends javax.swing.JFrame {
             }
 
             double finalPercentage = sumDiff * 100 / (sumMass * maxDiff);
-            labelMeanShiftUnmatch.setText("" + finalPercentage);
+            labelBlobScore.setText("" + Math.round(finalPercentage * 100) / 100.0);
             // labelMeanShiftUnmatch.setText("" + Math.round((designBlobList.size() - matchesList.size()) * 10000 / designBlobList.size()) / 100.0);
             // labelMeanShiftMatched.setText("" + Math.round((diffPer) * 100) / 100.0);
         } else {
@@ -825,12 +765,61 @@ public class CompareFrame extends javax.swing.JFrame {
     }
 
     private void compareLocalFeatures() {
-        double compareFeatures = new FeatureCompare().compareFeatures(designImage, actualImage,
-                FeatureCompare.FeatureEngine.GSIFT,
-                FeatureCompare.FeatureMatcher.ConsistentLocalFeatureMatcher2d,
-                true);
+        revert();
+        for (int i = 0; i < 3; i++) {
+            double score = 0;
+            Timer timer = new Timer();
+            JLabel lblScore = null;
+            JLabel lblTime = null;
+            switch (i) {
+                case 0: {
+                    setStatus("Processing SIFT features", true);
+                    score = new FeatureCompare().getSIFTMatchingScore(designImage, actualImage);
+                    lblScore = labelSiftScore;
+                    lblTime = labelSiftTime;
+                    break;
+                }
+                case 1: {
+                    setStatus("Processing CSIFT features", true);
+                    score = new FeatureCompare().getCSIFTMatchingScore(designImage, actualImage);
+                    lblScore = labelCSiftScore;
+                    lblTime = labelCSiftTime;
+                    break;
+                }
+                case 2: {
+                    setStatus("Processing PCA-SIFT features", true);
+                    score = new FeatureCompare().getPcaSIFTMatchingScore(designImage, actualImage);
+                    lblScore = labelPcaSiftScore;
+                    lblTime = labelPcaSiftTime;
+                    break;
+                }
+            }
+            timer.end();
+
+            lblScore.setText("" + Math.round(score * 100) / 100.0);
+            lblTime.setText(timer.durationAsString());
+        }
+
+//        double compareFeatures = new FeatureCompare().compareFeatures(designImage, actualImage,
+//                FeatureCompare.FeatureEngine.GSIFT,
+//                FeatureCompare.FeatureMatcher.ConsistentLocalFeatureMatcher2d,
+//                true);
 //        double compareFeatures = new FeatureCompare().getSIFTMatchingScore(designImage, actualImage);
-        labelLocalFeatureDiff.setText(String.valueOf("" + Math.round(compareFeatures * 100) / 100.0));
+//        labelSiftScore.setText(String.valueOf("" + Math.round(compareFeatures * 100) / 100.0));
+    }
+
+    private BufferedImage identifyBlobs(BufferedImage bufImage, ArrayList<BlobFinder.Blob> blobList) {
+        BlobFinder blobFinder = new BlobFinder(bufImage.getWidth(), bufImage.getHeight());
+        blobFinder.detectBlobs(bufImage, 0, -1, (byte) 0, blobList);
+        System.out.println("blob list size:" + blobList.size());
+//        for (BlobFinder.Blob blob : blobList) {
+//            System.out.println(blob);
+//        }
+        if (blobList.size() > 0) {
+            return blobFinder.getDstImage();
+        } else {
+            return bufImage;
+        }
     }
 
     private void displayBufferedImage(BufferedImage bufferedImage, String title) {
@@ -840,5 +829,11 @@ public class CompareFrame extends javax.swing.JFrame {
             frame.setBounds(0, 0, screenSize.width / 2, screenSize.height - 100);
             DisplayUtilities.display(bufferedImage, frame);
         }
+    }
+
+    private void revert() {
+        designImage = ImageUtil.duplicateImage(designImageOriginal);
+        actualImage = ImageUtil.duplicateImage(actualImageOriginal);
+        updateUI();
     }
 }

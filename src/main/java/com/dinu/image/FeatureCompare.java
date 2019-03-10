@@ -54,8 +54,9 @@ public class FeatureCompare {
         matcher.setModelFeatures(queryKeypoints);
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
+//        System.out.println("matches:" + matches.size());
 
-        displayMatches(query, target, matcher.getMatches(), RGBColour.RED);
+        displayMatches(query, target, matcher.getMatches(), RGBColour.RED, "SIFT");
 
         return calculateMatchesScore(design, matches);
     }
@@ -79,7 +80,7 @@ public class FeatureCompare {
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
 
-        displayMatches(query, target, matcher.getMatches(), RGBColour.CYAN);
+        displayMatches(query, target, matcher.getMatches(), RGBColour.CYAN, "PCA-SIFT");
 
         return calculateMatchesScore(design, matches);
     }
@@ -102,7 +103,7 @@ public class FeatureCompare {
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
 
-        displayMatches(query, target, matcher.getMatches(), RGBColour.GREEN);
+        displayMatches(query, target, matcher.getMatches(), RGBColour.GREEN, "ASIFT");
 
         return calculateMatchesScore(design, matches);
     }
@@ -124,15 +125,15 @@ public class FeatureCompare {
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
 
-        displayMatches(query, target, matcher.getMatches(), RGBColour.BLUE);
+        displayMatches(query, target, matcher.getMatches(), RGBColour.BLUE, "CSIFT");
 
         return calculateMatchesScore(design, matches);
     }
 
-    private void displayMatches(MBFImage query, MBFImage target, List<Pair<Keypoint>> matches, Float[] color) {
+    private void displayMatches(MBFImage query, MBFImage target, List<Pair<Keypoint>> matches, Float[] color, String title) {
         MBFImage consistentMatches = MatchingUtilities.drawMatches(query, target, matches,
                 color);
-        DisplayUtilities.display(consistentMatches);
+        DisplayUtilities.display(consistentMatches, title);
     }
 
     private double calculateMatchesScore(BufferedImage design, List<Pair<Keypoint>> matches) {
@@ -143,9 +144,9 @@ public class FeatureCompare {
             ++count;
         }
         if (count == 0) {
-            return 100.0;
+            return 0;
         } else {
-            return (sum * 100 / count) / maxDiff(design.getWidth(), design.getHeight());
+            return 100.0 - (sum * 100 / count) / maxDiff(design.getWidth(), design.getHeight());
         }
     }
 
@@ -220,7 +221,7 @@ public class FeatureCompare {
 
         List<Pair<Keypoint>> matches = matcher.getMatches();
         if (showFeatures) {
-            displayMatches(query, target, matches, RGBColour.GREEN);
+            displayMatches(query, target, matches, RGBColour.GREEN, featureEngine.name());
         }
 
         //calculate difference
@@ -251,7 +252,7 @@ public class FeatureCompare {
         matcher.findMatches(targetKeypoints);
 
         //basic
-        displayMatches(query, target, matcher.getMatches(), RGBColour.CYAN);
+        displayMatches(query, target, matcher.getMatches(), RGBColour.CYAN, "DoGSIFT");
 
         RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(5.0, 1500,
                 new RANSAC.PercentageInliersStoppingCondition(0.5));
