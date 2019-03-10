@@ -6,19 +6,15 @@ import org.openimaj.feature.local.matcher.BasicMatcher;
 
 import java.util.List;
 
-public class PcaMatcher<T extends LocalFeature<?, ?>> extends BasicMatcher<T> {
-    private final static int DEFAULT_THRESHOLD = 8;
-    private final static double DEFAULT_PCA_MULTI = 0.6;
-    private double pcaMultiply;
+public class CoordinationDistanceMatcher<T extends LocalFeature<?, ?>> extends BasicMatcher<T> {
 
-    public PcaMatcher() {
-        this(DEFAULT_PCA_MULTI);
+    public CoordinationDistanceMatcher(int threshold) {
+        super(threshold);
     }
 
-
-    public PcaMatcher(double pcaMultiply) {
-        super(DEFAULT_THRESHOLD);
-        this.pcaMultiply = pcaMultiply;
+    @Override
+    public boolean findMatches(List<T> keys1) {
+        return super.findMatches(keys1);
     }
 
     @Override
@@ -49,11 +45,10 @@ public class PcaMatcher<T extends LocalFeature<?, ?>> extends BasicMatcher<T> {
             }
         }
 
-        // check the distance against PCA multiplication
-        if (distsq1 < pcaMultiply * distsq2) {
+        // check the distance against the threshold
+        if (10 * 10 * distsq1 < thresh * thresh * distsq2) {
             return minkey;
         } else
             return null;
-
     }
 }

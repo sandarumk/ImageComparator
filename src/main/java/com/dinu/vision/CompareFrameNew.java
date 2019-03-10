@@ -799,13 +799,6 @@ public class CompareFrameNew extends JFrame {
             lblScore.setText("" + Math.round(score * 100) / 100.0);
             lblTime.setText(timer.durationAsString());
         }
-
-//        double compareFeatures = new FeatureCompare().compareFeatures(designImage, actualImage,
-//                FeatureCompare.FeatureEngine.GSIFT,
-//                FeatureCompare.FeatureMatcher.ConsistentLocalFeatureMatcher2d,
-//                true);
-//        double compareFeatures = new FeatureCompare().getSIFTMatchingScore(designImage, actualImage);
-//        labelSiftScore.setText(String.valueOf("" + Math.round(compareFeatures * 100) / 100.0));
     }
 
     private BufferedImage identifyBlobs(BufferedImage bufImage, ArrayList<BlobFinder.Blob> blobList) {

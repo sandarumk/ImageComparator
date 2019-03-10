@@ -1,5 +1,6 @@
 package com.dinu.image;
 
+import com.dinu.image.matcher.CoordinationDistanceMatcher;
 import com.dinu.image.matcher.PcaMatcher;
 import org.openimaj.feature.local.list.LocalFeatureList;
 import org.openimaj.feature.local.matcher.BasicMatcher;
@@ -18,9 +19,7 @@ import org.openimaj.image.feature.local.engine.asift.ASIFTEngine;
 import org.openimaj.image.feature.local.keypoints.Keypoint;
 import org.openimaj.image.text.extraction.swt.LineCandidate;
 import org.openimaj.image.text.extraction.swt.SWTTextDetector;
-import org.openimaj.math.geometry.transforms.HomographyRefinement;
 import org.openimaj.math.geometry.transforms.estimation.RobustAffineTransformEstimator;
-import org.openimaj.math.geometry.transforms.estimation.RobustHomographyEstimator;
 import org.openimaj.math.model.fit.RANSAC;
 import org.openimaj.util.pair.Pair;
 
@@ -46,19 +45,15 @@ public class FeatureCompare {
         LocalFeatureList<Keypoint> queryKeypoints = engine.findFeatures(query.flatten());
         LocalFeatureList<Keypoint> targetKeypoints = engine.findFeatures(target.flatten());
 
-        RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(5.0, 1500,
-                new RANSAC.PercentageInliersStoppingCondition(0.5));
-        LocalFeatureMatcher<Keypoint> matcher = new ConsistentLocalFeatureMatcher2d<>(
-                new FastBasicKeypointMatcher<>(8), modelFitter);
+        LocalFeatureMatcher<Keypoint> matcher = new CoordinationDistanceMatcher<>(8);
 
         matcher.setModelFeatures(queryKeypoints);
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
-//        System.out.println("matches:" + matches.size());
 
-        displayMatches(query, target, matcher.getMatches(), RGBColour.RED, "SIFT");
+        displayMatches(query, target, queryKeypoints, matcher.getMatches(), RGBColour.RED, "SIFT");
 
-        return calculateMatchesScore(design, matches);
+        return calculateMatchesScore(design, queryKeypoints.size(), matches);
     }
 
     public double getPcaSIFTMatchingScore(BufferedImage design, BufferedImage actual) {
@@ -69,20 +64,15 @@ public class FeatureCompare {
         LocalFeatureList<Keypoint> queryKeypoints = engine.findFeatures(query.flatten());
         LocalFeatureList<Keypoint> targetKeypoints = engine.findFeatures(target.flatten());
 
-//        LocalFeatureMatcher<Keypoint> matcher = new PcaMatcher<>();
-        RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(5.0, 1500,
-                new RANSAC.PercentageInliersStoppingCondition(0.5));
-        LocalFeatureMatcher<Keypoint> matcher = new ConsistentLocalFeatureMatcher2d<>(
-                new PcaMatcher<>(), modelFitter);
-
+        LocalFeatureMatcher<Keypoint> matcher = new PcaMatcher<>();
 
         matcher.setModelFeatures(queryKeypoints);
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
 
-        displayMatches(query, target, matcher.getMatches(), RGBColour.CYAN, "PCA-SIFT");
+        displayMatches(query, target, queryKeypoints, matcher.getMatches(), RGBColour.CYAN, "PCA-SIFT");
 
-        return calculateMatchesScore(design, matches);
+        return calculateMatchesScore(design, queryKeypoints.size(), matches);
     }
 
 
@@ -94,18 +84,15 @@ public class FeatureCompare {
         LocalFeatureList<Keypoint> queryKeypoints = engine.findKeypoints(query.flatten());
         LocalFeatureList<Keypoint> targetKeypoints = engine.findKeypoints(target.flatten());
 
-        RobustHomographyEstimator modelFitter = new RobustHomographyEstimator(10.0, 1000, new RANSAC.BestFitStoppingCondition(),
-                HomographyRefinement.NONE);
-        LocalFeatureMatcher<Keypoint> matcher = new ConsistentLocalFeatureMatcher2d<>(
-                new FastBasicKeypointMatcher<>(8), modelFitter);
+        LocalFeatureMatcher<Keypoint> matcher = new CoordinationDistanceMatcher<>(8);
 
         matcher.setModelFeatures(queryKeypoints);
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
 
-        displayMatches(query, target, matcher.getMatches(), RGBColour.GREEN, "ASIFT");
+        displayMatches(query, target, queryKeypoints, matcher.getMatches(), RGBColour.GREEN, "ASIFT");
 
-        return calculateMatchesScore(design, matches);
+        return calculateMatchesScore(design, queryKeypoints.size(), matches);
     }
 
     public double getCSIFTMatchingScore(BufferedImage design, BufferedImage actual) {
@@ -116,24 +103,40 @@ public class FeatureCompare {
         LocalFeatureList<Keypoint> queryKeypoints = engine.findFeatures(query);
         LocalFeatureList<Keypoint> targetKeypoints = engine.findFeatures(target);
 
-        RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(5.0, 1500,
-                new RANSAC.PercentageInliersStoppingCondition(0.5));
-        LocalFeatureMatcher<Keypoint> matcher = new ConsistentLocalFeatureMatcher2d<>(
-                new FastBasicKeypointMatcher<>(8), modelFitter);
+        LocalFeatureMatcher<Keypoint> matcher = new CoordinationDistanceMatcher<>(8);
 
         matcher.setModelFeatures(queryKeypoints);
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
 
-        displayMatches(query, target, matcher.getMatches(), RGBColour.BLUE, "CSIFT");
+        displayMatches(query, target, queryKeypoints, matcher.getMatches(), RGBColour.BLUE, "CSIFT");
 
-        return calculateMatchesScore(design, matches);
+        return calculateMatchesScore(design, queryKeypoints.size(), matches);
     }
 
-    private void displayMatches(MBFImage query, MBFImage target, List<Pair<Keypoint>> matches, Float[] color, String title) {
-        MBFImage consistentMatches = MatchingUtilities.drawMatches(query, target, matches,
-                color);
+    private void displayMatches(MBFImage query, MBFImage target, LocalFeatureList<Keypoint> queryKeypoints, List<Pair<Keypoint>> matches, Float[] color, String title) {
+        System.out.println("query points:" + queryKeypoints.size());
+        System.out.println("matches:" + matches.size());
+
+        query.drawPoints(queryKeypoints, RGBColour.MAGENTA, 5);
+        MBFImage consistentMatches = MatchingUtilities.drawMatches(query, target, matches, color);
         DisplayUtilities.display(consistentMatches, title);
+    }
+
+
+    private double calculateMatchesScore(BufferedImage design, int designPointCount, List<Pair<Keypoint>> matches) {
+        if (designPointCount == 0) {
+            return 0;
+        }
+        int matchesCount = matches.size();
+        double sum = 0;
+        for (Pair<Keypoint> pair : matches) {
+            sum += calculateDiff(pair);
+        }
+        double maxDiff = maxDiff(design.getWidth(), design.getHeight());
+        sum += (designPointCount - matchesCount) * maxDiff;
+
+        return 100.0 - ((sum * 100 / designPointCount) / maxDiff);
     }
 
     private double calculateMatchesScore(BufferedImage design, List<Pair<Keypoint>> matches) {
@@ -146,7 +149,7 @@ public class FeatureCompare {
         if (count == 0) {
             return 0;
         } else {
-            return 100.0 - (sum * 100 / count) / maxDiff(design.getWidth(), design.getHeight());
+            return 100.0 - ((sum * 100 / count) / maxDiff(design.getWidth(), design.getHeight()));
         }
     }
 
@@ -221,7 +224,7 @@ public class FeatureCompare {
 
         List<Pair<Keypoint>> matches = matcher.getMatches();
         if (showFeatures) {
-            displayMatches(query, target, matches, RGBColour.GREEN, featureEngine.name());
+            displayMatches(query, target, queryKeypoints, matches, RGBColour.GREEN, featureEngine.name());
         }
 
         //calculate difference
@@ -252,7 +255,7 @@ public class FeatureCompare {
         matcher.findMatches(targetKeypoints);
 
         //basic
-        displayMatches(query, target, matcher.getMatches(), RGBColour.CYAN, "DoGSIFT");
+        displayMatches(query, target, queryKeypoints, matcher.getMatches(), RGBColour.CYAN, "DoGSIFT");
 
         RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(5.0, 1500,
                 new RANSAC.PercentageInliersStoppingCondition(0.5));
