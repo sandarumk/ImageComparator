@@ -40,20 +40,31 @@ public class FeatureCompare {
     public double getSIFTMatchingScore(BufferedImage design, BufferedImage actual) {
         MBFImage query = ImageUtilities.createMBFImage(design, true);
         MBFImage target = ImageUtilities.createMBFImage(actual, true);
+
         DoGSIFTEngine engine = new DoGSIFTEngine();
 
         LocalFeatureList<Keypoint> queryKeypoints = engine.findFeatures(query.flatten());
         LocalFeatureList<Keypoint> targetKeypoints = engine.findFeatures(target.flatten());
 
-        LocalFeatureMatcher<Keypoint> matcher = new CoordinationDistanceMatcher<>(8);
+        return calculateSimilarityScore(queryKeypoints,targetKeypoints);
 
+//        LocalFeatureMatcher<Keypoint> matcher = new CoordinationDistanceMatcher<>(8);
+//
+//        matcher.setModelFeatures(queryKeypoints);
+//        matcher.findMatches(targetKeypoints);
+//        List<Pair<Keypoint>> matches = matcher.getMatches();
+//
+//        displayMatches(query, target, queryKeypoints, matcher.getMatches(), RGBColour.RED, "SIFT");
+//
+//        return calculateMatchesScore(design, queryKeypoints.size(), matches);
+    }
+
+    public double calculateSimilarityScore(LocalFeatureList<Keypoint> queryKeypoints, LocalFeatureList<Keypoint> targetKeypoints) {
+        LocalFeatureMatcher<Keypoint> matcher = new CoordinationDistanceMatcher<>(8);
         matcher.setModelFeatures(queryKeypoints);
         matcher.findMatches(targetKeypoints);
         List<Pair<Keypoint>> matches = matcher.getMatches();
-
-        displayMatches(query, target, queryKeypoints, matcher.getMatches(), RGBColour.RED, "SIFT");
-
-        return calculateMatchesScore(design, queryKeypoints.size(), matches);
+        return matches.size()*100/queryKeypoints.size();
     }
 
     public double getPcaSIFTMatchingScore(BufferedImage design, BufferedImage actual) {

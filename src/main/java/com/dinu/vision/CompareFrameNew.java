@@ -568,7 +568,7 @@ public class CompareFrameNew extends JFrame {
     }
 
     private void processBlobs() {
-        setStatus("Removing Texts", true);
+        setStatus("", true);
         removeTexts();
         removeTexts();
 
@@ -610,7 +610,9 @@ public class CompareFrameNew extends JFrame {
     }
 
     private void openImage(int imageType) {
+//        JFileChooser fileChooser = new JFileChooser("/Users/dinu/Desktop/MSC Research/Research Seminar/Research Report/Final Images/");
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("/Users/dinu/Desktop"));
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "Images (jpg, gif, png, bmp)", "jpg", "gif", "png", "bmp");
         fileChooser.setFileFilter(filter);
